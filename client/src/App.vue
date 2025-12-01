@@ -10,6 +10,12 @@ export default {
     ResponseBox
    },
 
+   data() {
+    return {
+      showResponse: false, 
+    }
+   },
+
   methods: {
     submitTopic(topic) {
       console.log("Topic submitted:", topic);

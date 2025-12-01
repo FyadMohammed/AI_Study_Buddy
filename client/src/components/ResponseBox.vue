@@ -1,7 +1,8 @@
 <template>
     <div 
     v-if="visible"
-    class="mt-6 w-full max-w-xl bg-black p-4
+    class="mt-6 w-full max-w-xl bg-white
+     p-4 mx-auto
     rounded-xl shadow-md"
     >
     <p class="text-gray-800 text-lg">
@@ -40,7 +41,7 @@ export default {
             const interval= setInterval(() => {
                 if (this.index < this.message.length) {
                     this.displayedText += this.message[this.index];
-                    this.index;
+                    this.index++;
                 } else {
                     clearInterval(interval);
                 }
