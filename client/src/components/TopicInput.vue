@@ -16,7 +16,7 @@
     <div class="max-w-xl mx-auto mt-10 p-6 bg-white/10 backdrop-blur-md
     rounded-2xl border border-white/20 shadow-xl ">
     <h2 class="text-2xl font-bold mb-6">What do you want to learn today?</h2>
-
+client
         <div class="flex gap-2">
             <input type="text"
             v-model="userTopic"
