@@ -1,6 +1,7 @@
 <script setup>
 import TopicInput from "./components/TopicInput.vue";
 import SummaryCard from "./components/SummaryCard.vue";
+import FlashcardList from "./components/FlashcardList.vue";
 import { ref } from 'vue' // Add this!
 
 //1. Loading the state: is the AI thinking?
@@ -19,22 +20,31 @@ const handleTopicSubmit = async (topic) => {
   isLoading.value = true;
 
   try {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    studyData.value = {
-      summary: `Detailed explanation of ${topic}...`,
+    const res = await fetch('http://localhost:3000/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic })
+    });
 
-      flashcards: [
-        { front: 'Term 1', back: 'Definition 1' },
-        { front: 'Term 2', back: 'Definition 2' }
-      ]
+    if (!res.ok) {
+      throw new Error('Server error');
     }
-  } catch {
+
+    const data = await res.json();
+
+    studyData.value = {
+      summary: data.summary,
+      flashcards: data.flashcards,
+      quiz: data.quiz
+    };
+  } catch (e) {
+    console.error(e);
     error.value = "Failed to generate study material. Please try again.";
   } finally {
     isLoading.value = false;
   }
 
-} 
+}
 </script>
 
 <template>
@@ -47,8 +57,24 @@ const handleTopicSubmit = async (topic) => {
 
     <main>
       <TopicInput @submitTopic="handleTopicSubmit" />
+      
+      <!-- Loading Indicator  -->
+      <div v-if="isLoading" class="max-w-xl mx-auto mt-6 p-4 bg-blue-500/20 rounded-xl border border-blue-400/30">
+        <p class="text-blue-300">Generating study material...</p>
+      </div>
+
+      <!-- Error Message -->
+       <div v-if="error" class="max-w-xl mx-auto mt-6 p-4 bg-red-500/20 rounded-xl border border-red-400/30">
+        <p class="text-red-300">{{ error }}</p>
+       </div>
+
       <!-- Summary Card -->
       <SummaryCard v-if="studyData" :summary="studyData.summary" />
+      
+      <!-- Flashcard List -->
+      <FlashcardList v-if="studyData?.flashcards" :flashcards="studyData.flashcards" />
+
+      <!-- Quiz-->
     </main>
   </div>
 </template>
