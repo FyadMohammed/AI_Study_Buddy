@@ -72,7 +72,7 @@ const handleTopicSubmit = async (topic) => {
       <SummaryCard v-if="studyData" :summary="studyData.summary" />
       
       <!-- Flashcard List -->
-      <FlashcardList v-if="studyData?.flashcards" :flashcards="studyData.flashcards" />
+      <FlashcardList v-if="studyData?.flashcards" :flashcards="studyData.flashcards"/>
 
       <!-- Quiz-->
     </main>
