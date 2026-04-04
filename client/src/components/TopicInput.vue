@@ -18,11 +18,11 @@ const handleGenerate = () => {
 </script>
 
 <template>
-    <div class="max-w-xl mx-auto mt-10 p-6 bg-white/10 backdrop-blur-md
+    <div class="max-w-xl mx-auto p-6 bg-white/10 backdrop-blur-md
     rounded-2xl border border-white/20 shadow-xl ">
         <h2 class="text-2xl font-bold mb-6">What do you want to learn today?</h2>
 
-        <div class="flex gap-2">
+        <div class="flex gap-5 items-center">
             <input type="text" v-model="userTopic" placeholder="Enter your topic" class="flex-1 px-4 py-3 rounded-xl
             bg-white/5 border border-white/20
             focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all" />

@@ -51,7 +51,7 @@ const handleTopicSubmit = async (topic) => {
   <div class="min-h-screen bg-[#0f172a] text-white font-sans p-8">
     <header class="text-center mb-12">
       <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500
-      bg-clip-text text-transparent mb-2">Study Buddy</h1>
+      bg-clip-text text-transparent mb-1 py-2">STUD LLM</h1>
       <p class="text-slate-400">Your AI Study Partner</p>
     </header>
 

@@ -11,6 +11,7 @@ defineProps({
 const flipped = ref({});
 
 const toggleFlip = (index) => {
+    //flip logic applied to the index of the card we click on
     flipped.value[index] = !flipped.value[index];
 };
 
@@ -29,12 +30,12 @@ const toggleFlip = (index) => {
         >
         <div v-if="!flipped[index]">
             <p class="text-sm text-purple-400 mb-2">Question</p>
-            <p class="text-lg text-slate-200"> {{ card.question }}</p>
+            <p class="text-lg text-slate-200"> {{ card.q }}</p>
         </div>
 
         <div v-else>
             <p class="text-sm text-green-400 mb-2">Answer</p>
-            <p class="text-lg text-slate-200"> {{ card.answer }}</p>
+            <p class="text-lg text-slate-200"> {{ card.a }}</p>
         </div>
         <p class="text-xs text-slate-500 mt-4 text-center">Click to flip card</p>
         </div>
