@@ -2,127 +2,117 @@
 
 ## Project Overview
 
-**AI Study Buddy** generates AI-powered study materials (summaries, flashcards, quizzes) for any topic.
+**AI Study Buddy** generates study materials (summaries, flashcards, quizzes) for any topic using a Vue 3 frontend and Express backend.
 
 ### Tech Stack
-- **Frontend**: Vue 3 + Vite
-- **Styling**: Tailwind CSS
+- **Frontend**: Vue 3 + Vite + TailwindCSS v4
 - **Backend**: Node.js + Express
-- **Database**: MongoDB
-- **AI Service**: Python + LangChain (later)
+- **AI Service**: Python FastAPI (placeholder, not yet integrated)
+- **Database**: Not yet integrated
 
 ---
 
-## Phase 1: Project Foundation (Days 1-3)
+## Progress Tracker
 
-### Day 1: Setup & Static Home Page
+### Phase 1: Project Foundation - COMPLETE
 
-**Goal**: 
-- Initialize Vue 3 project
-- Create basic folder structure
-- Build a beautiful static home page
+- [x] Initialize Vue 3 + Vite project
+- [x] Set up TailwindCSS v4 with Vite plugin
+- [x] Create TopicInput component with validation
+- [x] Build dark-themed glassmorphism UI
+- [x] Set up Express backend with CORS
+- [x] Create `POST /generate` endpoint (placeholder data)
+- [x] Connect frontend to backend via fetch API
+- [x] Add loading and error state handling
 
-**What you'll learn**:
-- Vite project initialization
-- Vue component structure
-- Component file organization
-- Basic HTML/CSS in Vue
+### Phase 2: Study Components - IN PROGRESS
 
-**Files to create**:
-- `src/App.vue` - Main app component
-- `src/components/HomePage.vue` - Home page
-- `src/pages/Home.vue` - Home page wrapper
+- [x] SummaryCard component for displaying topic summaries
+- [x] FlashcardList component with click-to-flip interaction
+- [ ] Quiz component UI (data exists but no display component)
+- [ ] Answer checking and scoring logic for quizzes
 
----
+### Phase 3: AI Integration - NOT STARTED
 
-## Phase 2: Authentication (Days 4-7)
+- [ ] Set up Python FastAPI service with actual LLM calls
+- [ ] Integrate LangChain for structured generation pipeline
+- [ ] Connect Express backend to Python AI service
+- [ ] Replace placeholder data with real AI responses
+- [ ] Add prompt templates for summary, flashcards, and quiz generation
 
-**Goal**: 
-- Build login/signup pages
-- Form validation
-- User authentication flow
+### Phase 4: Database & Persistence - NOT STARTED
 
-**What you'll learn**:
-- Vue forms and v-model
-- Form validation logic
-- Conditional rendering (v-if)
-- Component state management
+- [ ] Choose and integrate database (SQLite or MongoDB)
+- [ ] Create schema for topics, flashcards, and quizzes
+- [ ] Save generated content to database
+- [ ] Build topic history page
+- [ ] Add `GET /topics` and `GET /topics/:id` endpoints
 
----
+### Phase 5: Polish & Deploy - NOT STARTED
 
-## Phase 3: Main Feature (Days 8-14)
-
-**Goal**:
-- Topic input page
-- Results display (summary, flashcards, quiz)
-- History of topics
-
-**What you'll learn**:
-- API integration
-- State management (Pinia)
-- Async/await
-- List rendering (v-for)
+- [ ] User authentication (optional)
+- [ ] Responsive design refinement
+- [ ] Error handling improvements
+- [ ] Deploy frontend to Vercel/Netlify
+- [ ] Deploy backend to Render/Railway
 
 ---
 
-## Phase 4: Backend Integration (Days 15-21)
+## What's Built So Far
 
-**Goal**:
-- Connect to Express backend
-- User database
-- Topic storage
-- API endpoints
+### Frontend Components
 
-**What you'll learn**:
-- Express.js basics
-- MongoDB integration
-- RESTful API design
-- Database schemas
+**App.vue** — Main application component
+- Manages state: `isLoading`, `studyData`, `error`
+- `handleTopicSubmit()` calls the backend and updates state
+- Conditionally renders SummaryCard and FlashcardList
 
----
+**TopicInput.vue** — Input form
+- Text field with v-model binding
+- Validates non-empty input before emitting `submitTopic`
+- Styled with gradient button and frosted glass container
 
-## Phase 5: Polish & Deploy (Days 22-30)
+**SummaryCard.vue** — Summary display
+- Accepts `summary` prop (String)
+- Purple icon header with "Topic Summary" label
+- Glassmorphism card styling
 
-**Goal**:
-- AI service integration
-- Error handling
-- Responsive design refinement
-- Deployment
+**FlashcardList.vue** — Interactive flashcards
+- Accepts `flashcards` prop (Array of `{ q, a }` objects)
+- Click-to-flip functionality using reactive `flipped` state
+- Color-coded labels: purple for Question, green for Answer
 
----
+### Backend
 
-## Learning Approach
+**server/index.js** — Express server
+- `GET /` — Health check
+- `POST /generate` — Returns placeholder summary, 3 flashcards, and 1 quiz MCQ
+- CORS enabled, runs on port 3000
 
-Each day follows this pattern:
-
-```
-1. EXPLANATION (5-10 min)
-   ├─ What concept are we using?
-   ├─ Why do we use it?
-   └─ How does it work?
-
-2. GUIDED WALKTHROUGH (10-15 min)
-   ├─ Show code structure
-   ├─ Explain each part
-   └─ Show in browser
-
-3. YOU TYPE (20-30 min)
-   ├─ I show line-by-line what to type
-   ├─ You type it (no copy-paste!)
-   ├─ Pause between sections
-   └─ Test after each step
-
-4. YOU BUILD (30-45 min)
-   ├─ Build something similar
-   ├─ Apply what you learned
-   ├─ Make it your own
-   └─ Test it works
-```
+**server/main.py** — Python FastAPI placeholder
+- Single health check endpoint, no AI logic yet
 
 ---
 
-## Ready to Start?
+## Next Steps (Recommended Order)
 
-Let's begin with **Day 1: Project Setup + Home Page**
+1. **Build the Quiz component** — Display quiz questions, handle answer selection, show score
+2. **Integrate real AI** — Connect to an LLM API for actual content generation
+3. **Add database** — Persist topics and study materials
+4. **Build history page** — Let users revisit past topics
+5. **Deploy** — Ship it
 
-Say "Ready" when you're prepared, and I'll walk you through step-by-step!
+---
+
+## Key Concepts Used
+
+| Concept | Where It's Used |
+|---------|----------------|
+| Vue 3 Composition API | All components (`ref`, `reactive`, `emit`) |
+| Conditional rendering | `v-if` for loading/error/data states in App.vue |
+| List rendering | `v-for` for flashcards in FlashcardList.vue |
+| Event handling | `@click` for flip, `@submit` for topic input |
+| Props & Events | Parent-child communication between App and components |
+| Fetch API | App.vue calling `POST /generate` |
+| Express middleware | CORS, JSON body parsing in server/index.js |
+| TailwindCSS v4 | Utility-first styling across all components |
