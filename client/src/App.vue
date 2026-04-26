@@ -2,6 +2,7 @@
 import TopicInput from "./components/TopicInput.vue";
 import SummaryCard from "./components/SummaryCard.vue";
 import FlashcardList from "./components/FlashcardList.vue";
+import QuizCard from "./components/QuizCard.vue";
 import { ref } from 'vue' // Add this!
 
 //1. Loading the state: is the AI thinking?
@@ -45,6 +46,10 @@ const handleTopicSubmit = async (topic) => {
   }
 
 }
+
+const handleQuizComplete = ({ score, total }) => {
+  console.log(`Quiz complete: ${score}/${total}`);
+};
 </script>
 
 <template>
@@ -75,6 +80,7 @@ const handleTopicSubmit = async (topic) => {
       <FlashcardList v-if="studyData?.flashcards" :flashcards="studyData.flashcards"/>
 
       <!-- Quiz-->
+      <QuizCard v-if="studyData?.quiz" :quiz="studyData.quiz" @scoreComplete="handleQuizComplete" />
     </main>
   </div>
 </template>
