@@ -37,7 +37,7 @@ app.post('/generate', (req, res) => {
     { question: `Which statement about ${topic} is true?`, 
       choices: ['Option A', 'Option B', 'Option C'], 
       answerIndex: 0 
-  }
+    }
   ];
 
   res.json({ summary, flashcards, quiz });
