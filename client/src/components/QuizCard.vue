@@ -8,13 +8,17 @@ const props = defineProps({
     }
 });
 
+//outgoing event to parent component to send score data when quiz is complete
 const emit = defineEmits(["scoreComplete"]);
 
-const currentIndex = ref(0);
-const selectedIndex = ref(null);
-const score = ref(0);
-const finished = ref(false);
+//reference variables declared that vue watches for changes and updates the UI
 
+const currentIndex = ref(0); // track which question we're on
+const selectedIndex = ref(null); // track which choice the user has selected for the current question, null if none selected
+const score = ref(0); // track how many questions the user has answered correctly
+const finished = ref(false); // track whether the quiz is finished
+
+// 
 const currentQuestion = computed(() => props.quiz[currentIndex.value]);
 const isAnswered = computed(() => selectedIndex.value !== null);
 const isCorrect = computed(

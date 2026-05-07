@@ -1,88 +1,73 @@
 # AI Study Buddy
 
-**AI Study Buddy** is a full-stack web application that generates study materials (summaries, flashcards, and quizzes) for any topic. Built with **Vue 3 + TailwindCSS** on the frontend and **Node.js + Express** for the API. Designed as a learning project to demonstrate a complete UI-to-backend pipeline.
+A full-stack study tool that turns any topic into a summary, a set of flashcards, and an interactive quiz.
+
+Built as a learning project covering Vue 3, Express, and FastAPI.
 
 ---
 
-## How It Works
+## Quick Start
 
-1. User types a study topic (e.g. "Fourier Transform").
-2. Frontend sends the topic to the backend via `POST /generate`.
-3. Backend returns structured JSON containing a summary, flashcards, and quiz data.
-4. User reads the summary and studies with interactive flip flashcards.
+Three processes run together. Open three terminals.
 
----
+**1. Frontend** (Vue 3 + Vite, port 5173)
+```bash
+cd client
+npm install
+npm run dev
+```
 
-## Features (Implemented)
+**2. Backend** (Express, port 3000)
+```bash
+cd server
+npm install
+npm start
+```
 
-- Topic input with validation
-- AI-generated **summary** display
-- Interactive **flashcards** (click to flip between question and answer)
-- Loading and error state handling
-- Dark-themed glassmorphism UI with gradients
+**3. AI service** (Python FastAPI, port 8001)
+```bash
+cd server
+python -m venv venv
+.\venv\Scripts\activate
+pip install fastapi uvicorn
+uvicorn main:app --reload --port 8001
+```
 
-## Features (Planned)
-
-- Actual LLM/AI integration (currently returns placeholder data)
-- **Quiz** component UI (data is generated but not displayed)
-- Topic **history** and persistence (database)
-- User authentication and profiles
-- Spaced repetition scheduling
+Open http://localhost:5173, type a topic, click **Generate**.
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
+| Layer | Stack |
+|-------|-------|
 | Frontend | Vue 3 (Vite) + TailwindCSS v4 |
 | Backend | Node.js + Express |
-| AI Service | Python FastAPI (placeholder) |
-| Database | Not yet integrated |
+| AI service | Python FastAPI |
 
 ---
 
-## Project Structure
+## How It Works
 
-```
-AI_Study_Buddy/
-├── client/                  # Vue 3 + TailwindCSS frontend
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── TopicInput.vue       # Topic input form
-│   │   │   ├── SummaryCard.vue      # Summary display card
-│   │   │   └── FlashcardList.vue    # Interactive flip flashcards
-│   │   ├── App.vue                  # Main app (state + API calls)
-│   │   ├── main.js                  # Entry point
-│   │   └── style.css                # TailwindCSS imports
-│   ├── index.html
-│   ├── vite.config.js
-│   ├── tailwind.config.js
-│   └── package.json
-│
-├── server/                  # Express backend
-│   ├── index.js             # API server with /generate endpoint
-│   ├── main.py              # Python FastAPI placeholder
-│   └── package.json
-│
-├── README.md
-└── DEVELOPMENT_GUIDE.md
-```
+1. User submits a topic from the **TopicInput** component.
+2. `App.vue` sends `POST /generate` to the Express backend.
+3. Express returns a JSON payload with `summary`, `flashcards`, and `quiz`.
+4. The UI renders the **SummaryCard**, **FlashcardList** (click-to-flip), and **QuizCard** (one question at a time, score at the end).
+
+For the full system design, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
 
-## API Endpoints
+## API
 
 ### `POST /generate`
 
-Accepts a topic and returns study materials.
-
-**Request:**
+Request:
 ```json
 { "topic": "Photosynthesis" }
 ```
 
-**Response:**
+Response:
 ```json
 {
   "summary": "...",
@@ -91,50 +76,27 @@ Accepts a topic and returns study materials.
 }
 ```
 
-> Note: Currently returns placeholder data. AI integration is planned.
+### `GET /`
+Health check. Returns `{ message: "AI Study Buddy API (Express) is running!" }`.
 
 ---
 
-## Development Setup
+## Project Structure
 
-### Frontend
-```bash
-cd client
-npm install
-npm run dev
 ```
-Runs on `http://localhost:5173`
-
-### Backend
-```bash
-cd server
-npm install
-npm start        # or: npm run dev (with nodemon)
+AI_Study_Buddy/
+├── client/                       # Vue 3 + TailwindCSS frontend
+│   └── src/
+│       ├── components/
+│       │   ├── TopicInput.vue     # Topic submission form
+│       │   ├── SummaryCard.vue    # Summary display
+│       │   ├── FlashcardList.vue  # Click-to-flip flashcards
+│       │   └── QuizCard.vue       # Multi-step quiz with score
+│       ├── App.vue                # State + API call
+│       └── main.js
+├── server/
+│   ├── index.js                   # Express API
+│   └── main.py                    # FastAPI service
+├── ARCHITECTURE.md                # System blueprint + diagram
+└── README.md
 ```
-Runs on `http://localhost:3000`
-
-### Python AI Service (placeholder)
-```bash
-cd server
-python -m venv venv
-.\venv\Scripts\activate   # Windows
-pip install fastapi uvicorn
-uvicorn main:app --reload --port 8001
-```
-
----
-
-## Future Improvements
-
-- Integrate an LLM (via LangChain or direct API) for real content generation
-- Add SQLite or MongoDB for topic persistence and history
-- Build quiz interaction UI with answer checking and scoring
-- Add user profiles and progress tracking
-- Spaced repetition scheduling for flashcards
-- Deployment to Vercel (frontend) and Render/Railway (backend)
-
----
-
-## Contributing
-
-Create branches per feature, keep commits small, and write short PR descriptions for major changes.
