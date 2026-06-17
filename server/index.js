@@ -37,6 +37,18 @@ app.post('/generate', (req, res) => {
     { question: `Which statement about ${topic} is true?`, 
       choices: ['Option A', 'Option B', 'Option C'], 
       answerIndex: 0 
+    },
+    { question: `Why is ${topic} important?`, 
+      choices: ['Option A', 'Option B', 'Option C'], 
+      answerIndex: 2 
+    },
+    { question: `${topic} is _____?`, 
+      choices: ['Useful', 'Careless', 'Unbiased'], 
+      answerIndex: 2 
+    },
+    { question: `Which statement about ${topic} is not true?`, 
+      choices: ['Option A', 'Option B', 'Option C'], 
+      answerIndex: 1 
     }
   ];
 
@@ -45,3 +57,5 @@ app.post('/generate', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Express server listening on port ${PORT}`));
+
+

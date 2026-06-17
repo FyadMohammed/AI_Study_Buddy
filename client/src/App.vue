@@ -21,25 +21,25 @@ const handleTopicSubmit = async (topic) => {
   isLoading.value = true;
 
   try {
-    const res = await fetch('http://localhost:3000/generate', {
+    const response = await fetch('http://localhost:3000/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ topic })
     });
 
-    if (!res.ok) {
+    if (!response.ok) {
       throw new Error('Server error');
     }
 
-    const data = await res.json();
+    const responseData = await response.json();
 
     studyData.value = {
-      summary: data.summary,
-      flashcards: data.flashcards,
-      quiz: data.quiz
+      summary: responseData.summary,
+      flashcards: responseData.flashcards,
+      quiz: responseData.quiz
     };
-  } catch (e) {
-    console.error(e);
+  } catch (caughtError) {
+    console.error(caughtError);
     error.value = "Failed to generate study material. Please try again.";
   } finally {
     isLoading.value = false;

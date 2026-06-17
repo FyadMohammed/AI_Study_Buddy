@@ -13,13 +13,24 @@ const emit = defineEmits(["scoreComplete"]);
 
 //reference variables declared that vue watches for changes and updates the UI
 
-const currentIndex = ref(0); // track which question we're on
-const selectedIndex = ref(null); // track which choice the user has selected for the current question, null if none selected
-const score = ref(0); // track how many questions the user has answered correctly
-const finished = ref(false); // track whether the quiz is finished
+// track which question we're on,this will be an integer index into the quiz array, starting at 0
+const currentIndex = ref(0); 
 
-// 
+// track which choice the user has selected for the current question, null if none selected
+const selectedIndex = ref(null);
+
+// track how many questions the user has answered correctly
+const score = ref(0); 
+
+// track whether the quiz is finished
+const finished = ref(false); 
+
+//Current question is computed based on the current index.
+//Whenever currentIndex changes, currentQuestion will automatically
+//update to reflect the new question.
 const currentQuestion = computed(() => props.quiz[currentIndex.value]);
+
+// computes whether the user has selected an answer for the current question
 const isAnswered = computed(() => selectedIndex.value !== null);
 const isCorrect = computed(
     () => isAnswered.value && selectedIndex.value === currentQuestion.value.answerIndex
