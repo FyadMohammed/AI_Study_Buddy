@@ -19,7 +19,7 @@ const handleTopicSubmit = async (topic) => {
   console.log("Starting AI generation for:", topic);
 
   isLoading.value = true;
-
+ 
   try {
     const response = await fetch('http://localhost:3000/generate', {
       method: 'POST',

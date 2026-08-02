@@ -38,3 +38,33 @@ console.log('   First flashcard: ', reloadedTopic.flashcards[0]);
 console.log('   First quiz Q:    ', reloadedTopic.quiz[0]);
 
 console.log('\n--- All checks passed ---');
+
+console.log('\n4. Reading a non-existent topic...');
+const missingTopic = databaseService.getTopicById(99999);
+console.log('  Result for id 99999:', missingTopic);
+//Expected output: null or undefined
+
+console.log('\n5. Testing ON DELETE CASCADE...');
+const database = require('./db/connection');
+database.prepare('DELETE FROM topics WHERE id = ?').run(savedTopicId);
+
+const orphanFlashcards = database
+    .prepare('SELECT COUNT(*) AS count FROM flashcards WHERE topic_id =?')
+    .get(savedTopicId);
+
+console.log(' Orphan flashcards count after parent delete:', orphanFlashcards.count);
+
+console.log('\n6. Saving a topic with empty children arrays...');
+const emptyChildrenId = databaseService.saveTopic({
+    title: 'Empty Test',
+    summary: 'No flashcards or quiz items.',
+    flashcards: [],
+    quiz: []
+});
+
+const emptyChildrenTopic = databaseService.getTopicById(emptyChildrenId);
+console.log('  Title:', emptyChildrenTopic.title);
+console.log(' Flashcards count:', emptyChildrenTopic.flashcards.length);
+console.log(' Quiz count:', emptyChildrenTopic.quiz.length);
+
+//Expected: title set, both arrays length 0
