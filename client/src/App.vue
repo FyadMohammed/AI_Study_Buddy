@@ -27,20 +27,29 @@ const handleTopicSubmit = async (topic) => {
       body: JSON.stringify({ topic })
     });
 
-    if (!response.ok) {
-      throw new Error('Server error');
+    // The backend always returns an envelope:
+    //   success:  { success: true,  data:  { id, summary, flashcards, quiz } }
+    //   failure:  { success: false, error: "..." }
+    // So we parse the JSON first, then check the envelope — not response.ok.
+    const responseEnvelope = await response.json();
+
+    if (!responseEnvelope.success) {
+      // Use the specific error message the backend sent, if present
+      throw new Error(responseEnvelope.error || 'Server error');
     }
 
-    const responseData = await response.json();
+    // Unwrap the data payload before assigning to the reactive state
+    const studyPayload = responseEnvelope.data;
 
     studyData.value = {
-      summary: responseData.summary,
-      flashcards: responseData.flashcards,
-      quiz: responseData.quiz
+      id: studyPayload.id,
+      summary: studyPayload.summary,
+      flashcards: studyPayload.flashcards,
+      quiz: studyPayload.quiz
     };
   } catch (caughtError) {
     console.error(caughtError);
-    error.value = "Failed to generate study material. Please try again.";
+    error.value = caughtError.message || "Failed to generate study material. Please try again.";
   } finally {
     isLoading.value = false;
   }

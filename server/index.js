@@ -1,63 +1,53 @@
-const express = require('express');
-const cors = require('cors');
+// ─── EXPRESS SERVER ENTRY POINT ──────────────────────────────────────────────
+// This file's job is to WIRE THINGS UP:
+//   • Load the framework and middleware
+//   • Register route handlers (which delegate to services)
+//   • Start listening on a port
+//
+// Notice how thin each route handler is now — no business logic lives here.
+// Routes are HTTP-shaped adapters around service function calls.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const express                = require('express');
+const cors                   = require('cors');
+const generationOrchestrator = require('./services/generationOrchestrator');
+const responseFormatter      = require('./utils/responseFormatter');
 
 const app = express();
+
+// ── Middleware (runs on every request, in order) ─────────────────────
+// cors():         allows the frontend on :5173 to call this server on :3000
+// express.json(): parses incoming JSON request bodies into req.body objects
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.json({ 
-    message: 'AI Study Buddy API (Express) is running!' 
-  });
+// ── GET / — health check ─────────────────────────────────────────────
+// Uses the same envelope pattern as every other endpoint, for consistency.
+app.get('/', (request, response) => {
+    response.json(responseFormatter.success({
+        message: 'AI Study Buddy API (Express) is running!'
+    }));
 });
 
-app.post('/generate', (req, res) => {
-  const { topic } = req.body || {};
-  if (!topic) {
-    return res.status(400).json({ 
-      error: 'Missing topic in request body' 
-    });
-  }
-  // Here the actual AI logic would go, but for now we return dummy data
-  const summary = `A concise explanation of ${topic}.`;
-  const flashcards = [
-    { 
-      q: `What is ${topic}?`, 
-      a: `A short definition of ${topic}.` 
-    },
-    { q: `Why is ${topic} important?`, 
-      a: `Because it helps with doing nothing and wasting time.` 
-    },
-    {
-      q: `How does ${topic} work?`,
-      a: `It works by sleeping and dreaming about ${topic}.`
-    }
-  ];
-  const quiz = [
-    { question: `Which statement about ${topic} is true?`, 
-      choices: ['Option A', 'Option B', 'Option C'], 
-      answerIndex: 0 
-    },
-    { question: `Why is ${topic} important?`, 
-      choices: ['Option A', 'Option B', 'Option C'], 
-      answerIndex: 2 
-    },
-    { question: `${topic} is _____?`, 
-      choices: ['Useful', 'Careless', 'Unbiased'], 
-      answerIndex: 2 
-    },
-    { question: `Which statement about ${topic} is not true?`, 
-      choices: ['Option A', 'Option B', 'Option C'], 
-      answerIndex: 1 
-    }
-  ];
+// ── POST /generate — thin handler ────────────────────────────────────
+// Everything of substance happens in the orchestrator. This handler only:
+//   1. Pulls the topic out of the request body
+//   2. Delegates to the orchestrator (which returns a formatted envelope)
+//   3. Picks an HTTP status code based on success/failure
+//   4. Sends the envelope back as JSON
+app.post('/generate', (request, response) => {
+    // Destructure with fallback: if request.body is undefined (no body sent),
+    // fall back to {} so destructuring doesn't throw.
+    const { topic } = request.body || {};
 
-  res.json({ summary, flashcards, quiz });
+    const resultEnvelope = generationOrchestrator.generate(topic);
+
+    // Ternary: 200 (OK) if the workflow succeeded, 400 (Bad Request) if it
+    // failed for input reasons. Later we might add 500 for unexpected errors.
+    const httpStatus = resultEnvelope.success ? 200 : 400;
+
+    response.status(httpStatus).json(resultEnvelope);
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Express server listening on port ${PORT}`));
-
-
-
-
