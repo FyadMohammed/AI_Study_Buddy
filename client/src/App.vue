@@ -5,20 +5,16 @@ import FlashcardList from "./components/FlashcardList.vue";
 import QuizCard from "./components/QuizCard.vue";
 import { ref } from 'vue' // Add this!
 
-//1. Loading the state: is the AI thinking?
-
 const isLoading = ref(false);
-
-//2. Study Data: This will hold the AI's response
-const studyData = ref(null);
-
-//3. Error State: What if the AI fails?
 const error = ref(null);
+const studyData = ref(null);
 
 const handleTopicSubmit = async (topic) => {
   console.log("Starting AI generation for:", topic);
 
   isLoading.value = true;
+  error.value=null;
+  studyData.value= null;
  
   try {
     const response = await fetch('http://localhost:3000/generate', {
@@ -26,30 +22,25 @@ const handleTopicSubmit = async (topic) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ topic })
     });
-
-    // The backend always returns an envelope:
-    //   success:  { success: true,  data:  { id, summary, flashcards, quiz } }
-    //   failure:  { success: false, error: "..." }
-    // So we parse the JSON first, then check the envelope — not response.ok.
     const responseEnvelope = await response.json();
-
+    
     if (!responseEnvelope.success) {
       // Use the specific error message the backend sent, if present
       throw new Error(responseEnvelope.error || 'Server error');
     }
-
     // Unwrap the data payload before assigning to the reactive state
     const studyPayload = responseEnvelope.data;
-
     studyData.value = {
       id: studyPayload.id,
       summary: studyPayload.summary,
       flashcards: studyPayload.flashcards,
       quiz: studyPayload.quiz
     };
+    
   } catch (caughtError) {
     console.error(caughtError);
     error.value = caughtError.message || "Failed to generate study material. Please try again.";
+    
   } finally {
     isLoading.value = false;
   }
@@ -74,7 +65,13 @@ const handleQuizComplete = ({ score, total }) => {
       
       <!-- Loading Indicator  -->
       <div v-if="isLoading" class="max-w-xl mx-auto mt-6 p-4 bg-blue-500/20 rounded-xl border border-blue-400/30">
-        <p class="text-blue-300">Generating study material...</p>
+        <div class="flex items-center gap-3">
+          <!-- Tailwind's animate-spin turns this ring continuously. The trick is
+               a circle with a faint border all round and one bright edge on top,
+               so the spin is visible. -->
+          <div class="h-5 w-5 rounded-full border-2 border-blue-300/30 border-t-blue-300 animate-spin"></div>
+          <p class="text-blue-300">Generating study material...</p>
+        </div>
       </div>
 
       <!-- Error Message -->
@@ -89,7 +86,12 @@ const handleQuizComplete = ({ score, total }) => {
       <FlashcardList v-if="studyData?.flashcards" :flashcards="studyData.flashcards"/>
 
       <!-- Quiz-->
-      <QuizCard v-if="studyData?.quiz" :quiz="studyData.quiz" @scoreComplete="handleQuizComplete" />
+      <QuizCard
+        v-if= "studyData?.quiz"
+        :key="studyData.id"
+        :quiz="studyData.quiz"
+        @scoreComplete="handleQuizComplete"
+      />
     </main>
   </div>
 </template>

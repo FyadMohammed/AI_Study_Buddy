@@ -11,7 +11,7 @@ defineProps({
 
 <template>
     <!-- main container with glassmorphism ( transparency + blur ) -->
-    <div class="bg-slate-800/500 backdrop-blur-md rounded-2xl mt-3 p-7 border border-slate-700/50 shadow-xl mb-8">
+    <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl mt-3 p-7 border border-slate-700/50 shadow-xl mb-8">
         <div class="p-3 bg-purple-500/20 rounded-lg text-purple-400">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

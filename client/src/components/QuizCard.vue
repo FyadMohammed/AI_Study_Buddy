@@ -28,7 +28,9 @@ const finished = ref(false);
 //Current question is computed based on the current index.
 //Whenever currentIndex changes, currentQuestion will automatically
 //update to reflect the new question.
-const currentQuestion = computed(() => props.quiz[currentIndex.value]);
+const currentQuestion = computed(
+    () => props.quiz[currentIndex.value]
+);
 
 // computes whether the user has selected an answer for the current question
 const isAnswered = computed(() => selectedIndex.value !== null);
@@ -65,7 +67,7 @@ const choiceClass = (index) => {
     if (!isAnswered.value) {
         return "bg-slate-700/40 border-slate-600/50 hover:border-purple-500/50 hover:bg-slate-700/60";
     }
-    if (index === currentQuestion.value.answerIndex) {
+    if (index === currentQuestion.value.answerIndexd) {
         return "bg-green-500/20 border-green-400/50 text-green-200";
     }
     if (index === selectedIndex.value) {

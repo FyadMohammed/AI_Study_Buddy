@@ -1,9 +1,23 @@
-Project_Plan.md
-DEVELOPMENT_GUIDE.md
-Progress_Checkpoints.md
-Notes.md
-*.db 
+# Secrets — must be here BEFORE any API key exists on disk
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+server/venv/
+__pycache__/
+*.pyc
+
+# Database
+*.db
 server/data
+
+# Private working docs (not for the public repo)
+Notes.md
 PROGRESS.md
 KNOWLEDGE_MAP.md
-QUIZ_KEY.md
+BUGS.md
+LEARNING_LOG.md
+QUIZ.md
+CLAUDE.md

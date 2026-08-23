@@ -67,13 +67,25 @@ Request:
 { "topic": "Photosynthesis" }
 ```
 
-Response:
+Every response is wrapped in an envelope, so a caller can tell success from
+failure with a single property check and never has to consult the status code.
+
+Success:
 ```json
 {
-  "summary": "...",
-  "flashcards": [{ "q": "...", "a": "..." }],
-  "quiz": [{ "question": "...", "choices": ["a", "b", "c"], "answerIndex": 1 }]
+  "success": true,
+  "data": {
+    "id": 9,
+    "summary": "...",
+    "flashcards": [{ "q": "...", "a": "..." }],
+    "quiz": [{ "question": "...", "choices": ["a", "b", "c"], "answerIndex": 1 }]
+  }
 }
+```
+
+Failure:
+```json
+{ "success": false, "error": "Topic cannot be empty" }
 ```
 
 ### `GET /`

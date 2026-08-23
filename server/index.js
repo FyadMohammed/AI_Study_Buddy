@@ -29,16 +29,28 @@ app.get('/', (request, response) => {
     }));
 });
 
+// ── TEMPORARY: fake network latency ──────────────────────────────────
+// The mock AI answers in about a millisecond, which makes the frontend's
+// loading spinner and error states impossible to actually look at. This
+// pauses the handler so those states last long enough to see and test.
+//
+// DELETE THIS BLOCK when the Python AI service is wired in — a real LLM
+// call brings 5-15 seconds of its own latency and won't need faking.
+const ARTIFICIAL_DELAY_MS = 1200;
+const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));
+
 // ── POST /generate — thin handler ────────────────────────────────────
 // Everything of substance happens in the orchestrator. This handler only:
 //   1. Pulls the topic out of the request body
 //   2. Delegates to the orchestrator (which returns a formatted envelope)
 //   3. Picks an HTTP status code based on success/failure
 //   4. Sends the envelope back as JSON
-app.post('/generate', (request, response) => {
+app.post('/generate', async (request, response) => {
     // Destructure with fallback: if request.body is undefined (no body sent),
     // fall back to {} so destructuring doesn't throw.
     const { topic } = request.body || {};
+
+    await sleep(ARTIFICIAL_DELAY_MS);   // TEMPORARY — see note above
 
     const resultEnvelope = generationOrchestrator.generate(topic);
 

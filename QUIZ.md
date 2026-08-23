@@ -181,10 +181,17 @@ Argue the case **against** that decision, specific to this project as it stands 
 # ANSWER SHEET
 
 **Q1 —**
-
+handleGenerate-> emit()-> handleTopicSubmit->
+I have a bit difficulties in understanding handleTopicSubmit
+what I understand is that first the try block is executed. 
+A request is sent to the localhost using POST method. However
+I have forgotten what is POST method. Which is expected to recieve
+a response with a body which will be turned into a string from JSON
+format. ( I have took reference from the TopicInput.vue and App.vue
+Didn't understood the index.js and generation orchestrator
 
 **Q2 —**
-
+Don't know really
 
 **Q3 —**
 
