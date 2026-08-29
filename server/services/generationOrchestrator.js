@@ -29,7 +29,8 @@ const generate = (rawTopic) => {
         // the workflow if the input is bad — save the DB and AI work.
         return responseFormatter.failure(validation.error);
     }
-    // From here on, use the CLEANED topic (whitespace trimmed).
+    try{
+        // From here on, use the CLEANED topic (whitespace trimmed).
     const cleanedTopic = validation.cleanedTopic;
 
     // ── Step 2: generate study material ───────────────────────────────
@@ -56,6 +57,11 @@ const generate = (rawTopic) => {
         flashcards: studyMaterial.flashcards,
         quiz:       studyMaterial.quiz
     });
+    }catch(unexpectedError){
+        console.error(unexpectedError);
+        return responseFormatter.failure('Failed to generate the study material. Please try again');
+    }
+    
 };
 
 module.exports = { generate };
