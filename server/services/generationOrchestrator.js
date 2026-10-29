@@ -16,11 +16,23 @@
 // Import the specialists this orchestrator will coordinate.
 // Destructuring pulls named exports out of each required module.
 const { validateTopic }        = require('../middleware/inputValidator');
-const { generateStudyMaterial } = require('./mockAiService');
+// Two sources of study material. The real one calls the Python AI service;
+// the mock returns hard-coded strings and cannot fail.
+//
+// USE_MOCK_AI=true in server/.env keeps the app working before an API key
+// exists, and makes frontend work possible without spending tokens. Anything
+// else uses the real pipeline.
+const mockAiService = require('./mockAiService');
+const aiServiceClient = require('./aiServiceClient');
+
+const USE_MOCK_AI = process.env.USE_MOCK_AI === 'true';
+const generateStudyMaterial = USE_MOCK_AI
+    ? mockAiService.generateStudyMaterial
+    : aiServiceClient.generateStudyMaterial;
 const databaseService           = require('./databaseService');
 const responseFormatter         = require('../utils/responseFormatter');
 
-const generate = (rawTopic) => {
+const generate = async (rawTopic) => {
 
     // ── Step 1: validate ──────────────────────────────────────────────
     const validation = validateTopic(rawTopic);
@@ -36,7 +48,10 @@ const generate = (rawTopic) => {
     // ── Step 2: generate study material ───────────────────────────────
     // Right now this returns hard-coded strings with ${topic} interpolated.
     // In Step 8 we swap this line to call the real Python AI service.
-    const studyMaterial = generateStudyMaterial(cleanedTopic);
+    // await, because this is now an HTTP call to the Python service.
+    // Forget the await here and studyMaterial becomes a Promise, every field
+    // below reads as undefined, and the failure surfaces three layers away.
+    const studyMaterial = await generateStudyMaterial(cleanedTopic);
 
     // ── Step 3: persist to database ───────────────────────────────────
     // databaseService.saveTopic runs an atomic transaction that inserts into

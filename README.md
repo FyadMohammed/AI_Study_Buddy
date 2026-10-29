@@ -88,8 +88,33 @@ Failure:
 { "success": false, "error": "Topic cannot be empty" }
 ```
 
+### `GET /topics`
+The history list. Returns `{ success: true, data: [{ id, title, created_at }] }`,
+newest first. Deliberately lightweight — no flashcards or quiz questions.
+
+### `GET /topics/:id`
+One saved topic in full, including flashcards and quiz.
+`400` if the id is not a positive whole number, `404` if no such topic exists.
+
 ### `GET /`
 Health check. Returns `{ message: "AI Study Buddy API (Express) is running!" }`.
+
+---
+
+## The AI pipeline
+
+`POST /ai/generate` on the Python service runs three LangChain steps in order,
+each one feeding the next:
+
+1. **Summary** — topic in, a plain-language explanation out.
+2. **Flashcards** — receives the summary, so the cards test what was actually
+   taught rather than drifting onto unrelated facts.
+3. **Quiz** — receives the summary *and* the flashcards, so questions cover the
+   material without repeating the cards.
+
+`ai/output_parser.py` then enforces the shape the frontend reads. Model replies
+are not trusted to be clean JSON: code fences, stray prose and malformed entries
+are all handled there rather than reaching Vue as `undefined`.
 
 ---
 

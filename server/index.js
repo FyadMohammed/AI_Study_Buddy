@@ -12,6 +12,8 @@ const express                = require('express');
 const cors                   = require('cors');
 const generationOrchestrator = require('./services/generationOrchestrator');
 const responseFormatter      = require('./utils/responseFormatter');
+const topicRoutes            = require('./routes/topicRoutes');
+const { errorHandler }       = require('./middleware/errorHandler');
 
 const app = express();
 
@@ -50,9 +52,14 @@ app.post('/generate', async (request, response) => {
     // fall back to {} so destructuring doesn't throw.
     const { topic } = request.body || {};
 
-    await sleep(ARTIFICIAL_DELAY_MS);   // TEMPORARY — see note above
+    // Only fake latency when the mock is in use. The real pipeline brings
+    // 5-15 seconds of its own and needs no help looking slow.
+    if (process.env.USE_MOCK_AI === 'true') {
+        await sleep(ARTIFICIAL_DELAY_MS);
+    }
 
-    const resultEnvelope = generationOrchestrator.generate(topic);
+    // await — generate() is async now that a real AI call sits inside it.
+    const resultEnvelope = await generationOrchestrator.generate(topic);
 
     // Ternary: 200 (OK) if the workflow succeeded, 400 (Bad Request) if it
     // failed for input reasons. Later we might add 500 for unexpected errors.
@@ -60,6 +67,22 @@ app.post('/generate', async (request, response) => {
 
     response.status(httpStatus).json(resultEnvelope);
 });
+
+// ── /topics/* ─ the read side, mounted from its own file ───────────
+// Everything in topicRoutes.js hangs off this prefix:
+//   router.get('/')     →  GET /topics
+//   router.get('/:id')  →  GET /topics/4
+app.use('/topics', topicRoutes);
+
+// ── Error handler ─ MUST be registered last ────────────────────
+// Middleware runs in the order it is registered, and this one is the net at
+// the bottom. Put it above the routes and it would never fire, because the
+// routes would answer first.
+//
+// It catches synchronous throws, plus anything a route hands over by calling
+// next(error). An async handler that rejects on its own does NOT reach here
+// in Express 4 — which is why POST /generate catches inside the orchestrator.
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Express server listening on port ${PORT}`));
