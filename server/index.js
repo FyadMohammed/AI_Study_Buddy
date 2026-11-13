@@ -31,13 +31,11 @@ app.get('/', (request, response) => {
     }));
 });
 
-// ── TEMPORARY: fake network latency ──────────────────────────────────
+// ── Fake network latency, mock mode only ─────────────────────────────
 // The mock AI answers in about a millisecond, which makes the frontend's
-// loading spinner and error states impossible to actually look at. This
-// pauses the handler so those states last long enough to see and test.
-//
-// DELETE THIS BLOCK when the Python AI service is wired in — a real LLM
-// call brings 5-15 seconds of its own latency and won't need faking.
+// loading spinner impossible to see. When USE_MOCK_AI=true the handler
+// below pauses for this long. The real pipeline brings its own latency and
+// skips this entirely.
 const ARTIFICIAL_DELAY_MS = 1200;
 const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));
 

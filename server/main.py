@@ -15,7 +15,7 @@ What it talks to:
 
 Run it:
     cd server
-    .\\venv\\Scripts\\activate
+    .\\.venv\\Scripts\\activate
     uvicorn main:app --reload --port 8001
 """
 

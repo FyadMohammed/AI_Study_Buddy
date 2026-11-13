@@ -67,7 +67,7 @@ const choiceClass = (index) => {
     if (!isAnswered.value) {
         return "bg-slate-700/40 border-slate-600/50 hover:border-purple-500/50 hover:bg-slate-700/60";
     }
-    if (index === currentQuestion.value.answerIndexd) {
+    if (index === currentQuestion.value.answerIndex) {
         return "bg-green-500/20 border-green-400/50 text-green-200";
     }
     if (index === selectedIndex.value) {
